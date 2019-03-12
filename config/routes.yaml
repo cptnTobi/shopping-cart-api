@@ -1,0 +1,3 @@
+api:
+  path: api/v1/cart/{cartId}/product/{productId}
+  controller: App\UI\Api\Controller\TeamController::getYoungestPlayer

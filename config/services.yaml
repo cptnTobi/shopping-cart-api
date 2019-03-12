@@ -1,0 +1,42 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+  App\:
+    resource: '../src/*'
+    exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
+
+  #    App\UI\Api\Controller\:
+  #        resource: '../src/UI/Api/v1/Controller'
+  #        tags: ['controller.service_arguments']
+
+  logger:
+    lazy:  true
+    class: \Symfony\Bridge\Monolog\Logger
+    arguments:
+      $name: cart
+
+  App\UI\Api\v1\Controller\GetAllItemsFromCartController:
+    public: true
+    arguments:
+      $getAllItemsFromCart: '@App\Application\UseCase\GetAllItemsFromCartUseCase'
+  App\UI\Api\v1\Controller\AddItemToCartController:
+    public: true
+    arguments:
+      $addItemToCartUseCase: '@App\Application\UseCase\AddItemToCartUseCase'
+
+  App\Application\UseCase\AddItemToCartUseCase:
+    arguments:
+      $cartWriterRepository: '@App\Infrastructure\Repository\Cart\CartWriterRepository'
+      $logger: '@logger'
+  App\Application\UseCase\GetAllItemsFromCartUseCase:
+    arguments:
+      $cartReaderRepository: '@App\Infrastructure\Repository\Cart\CartReaderRepository'
+      $logger: '@logger'
+
+  App\Infrastructure\Repository\Cart\CartReaderRepository:
+    arguments:
+      $cache: '@memcached_service'
+  App\Infrastructure\Repository\Cart\CartWriterRepository:
+    arguments:
+      $cache: '@memcached_service'

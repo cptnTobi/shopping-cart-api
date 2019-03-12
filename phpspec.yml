@@ -1,0 +1,8 @@
+formatter.name: pretty
+rerunner:
+  path: vendor/bin/phpspec
+  commands: [describe]
+
+suites:
+  default:
+    spec_path: tests/unit
