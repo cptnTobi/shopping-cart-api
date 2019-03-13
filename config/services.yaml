@@ -34,9 +34,9 @@ services:
       $cartReaderRepository: '@App\Infrastructure\Repository\Cart\CartReaderRepository'
       $logger: '@logger'
 
-  App\Infrastructure\Repository\Cart\CartReaderRepository:
-    arguments:
-      $cache: '@memcached_service'
-  App\Infrastructure\Repository\Cart\CartWriterRepository:
-    arguments:
-      $cache: '@memcached_service'
+#  App\Infrastructure\Repository\Cart\CartReaderRepository:
+#    arguments:
+#      $cache: '@Predis\Client'
+#  App\Infrastructure\Repository\Cart\CartWriterRepository:
+#    arguments:
+#      $cache: '@Predis\Client'

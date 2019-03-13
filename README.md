@@ -1,3 +1,9 @@
+Init
+====
+```
+composer install
+```
+
 Docker
 ======
 ```
@@ -17,6 +23,4 @@ Endpoints
 
 ToDos
 =====
-- Use Redis
 - Define/extend entity (maybe 1 Product can be x times in the cart)
-- Add memcached / redis to docker

@@ -3,26 +3,27 @@
 namespace App\Infrastructure\Repository\Cart;
 
 use App\Application\Interfaces\CartWriterRepositoryInterface;
-use Memcached;
-use Symfony\Component\Cache\Adapter\MemcachedAdapter;
+use Predis\Connection\AbstractConnection;
+use Symfony\Component\Cache\Adapter\RedisAdapter;
 
 class CartWriterRepository implements CartWriterRepositoryInterface
 {
-    /* @var Memcached */
+    /* @var AbstractConnection */
     private $cache;
 
     /**
-     * @param MemcachedAdapter $cache
+     * CartWriterRepository constructor.
      */
-    public function __construct(MemcachedAdapter $cache)
+    public function __construct()
     {
-        $this->cache = $cache;
+        $this->cache = RedisAdapter::createConnection(
+            'redis://redis'
+        );
     }
 
     /**
      * @param int $cartId
      * @param array $products
-     * @throws \Psr\Cache\InvalidArgumentException
      */
     public function addProductToCart(int $cartId, array $products): void
     {

@@ -3,26 +3,28 @@
 namespace App\Infrastructure\Repository\Cart;
 
 use App\Application\Interfaces\CartReaderRepositoryInterface;
-use Memcached;
-use Symfony\Component\Cache\Adapter\MemcachedAdapter;
+use Predis\Connection\AbstractConnection;
+use Symfony\Component\Cache\Adapter\RedisAdapter;
+
 
 class CartReaderRepository implements CartReaderRepositoryInterface
 {
-    /* @var Memcached */
+    /* @var AbstractConnection */
     private $cache;
 
     /**
-     * @param MemcachedAdapter $cache
+     * CartWriterRepository constructor.
      */
-    public function __construct(MemcachedAdapter $cache)
+    public function __construct()
     {
-        $this->cache = $cache;
+        $this->cache = RedisAdapter::createConnection(
+            'redis://redis'
+        );
     }
 
     /**
      * @param int $cartId
      * @return array
-     * @throws \Psr\Cache\InvalidArgumentException
      */
     public function getCart(int $cartId): array
     {
@@ -32,10 +34,9 @@ class CartReaderRepository implements CartReaderRepositoryInterface
     /**
      * @param int $cartId
      * @return array
-     * @throws \Psr\Cache\InvalidArgumentException
      */
     public function findAllProductsFromCart(int $cartId): array
     {
-        return $this->cache->get(self::CART . '_' . $cartId . '_' . self::PRODUCTS);
+        return $this->cache->get(self::CART . '_' . $cartId . '_' . self::PRODUCTS) ?? [];
     }
 }

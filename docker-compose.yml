@@ -50,3 +50,9 @@ services:
     container_name: sf4_maildev
     ports:
       - 8001:80
+
+  redis:
+    image: redis:4.0.2
+    hostname: redis
+    volumes:
+      - "./volumes/redis:/data"
