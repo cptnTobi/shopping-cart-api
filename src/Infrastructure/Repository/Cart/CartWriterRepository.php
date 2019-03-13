@@ -14,10 +14,10 @@ class CartWriterRepository implements CartWriterRepositoryInterface
     /**
      * CartWriterRepository constructor.
      */
-    public function __construct()
+    public function __construct(string $host)
     {
         $this->cache = RedisAdapter::createConnection(
-            'redis://redis'
+            $host
         );
     }
 

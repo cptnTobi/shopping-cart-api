@@ -1,3 +1,6 @@
+parameters:
+  redis_host: 'redis://redis'
+
 services:
   _defaults:
     autowire: true
@@ -34,9 +37,9 @@ services:
       $cartReaderRepository: '@App\Infrastructure\Repository\Cart\CartReaderRepository'
       $logger: '@logger'
 
-#  App\Infrastructure\Repository\Cart\CartReaderRepository:
-#    arguments:
-#      $cache: '@Predis\Client'
-#  App\Infrastructure\Repository\Cart\CartWriterRepository:
-#    arguments:
-#      $cache: '@Predis\Client'
+  App\Infrastructure\Repository\Cart\CartReaderRepository:
+    arguments:
+      $host: '%redis_host%'
+  App\Infrastructure\Repository\Cart\CartWriterRepository:
+    arguments:
+      $host: '%redis_host%'
