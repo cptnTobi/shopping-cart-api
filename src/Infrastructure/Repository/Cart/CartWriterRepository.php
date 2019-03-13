@@ -3,22 +3,24 @@
 namespace App\Infrastructure\Repository\Cart;
 
 use App\Application\Interfaces\CartWriterRepositoryInterface;
-use Predis\Connection\AbstractConnection;
-use Symfony\Component\Cache\Adapter\RedisAdapter;
+use Predis\Client;
 
 class CartWriterRepository implements CartWriterRepositoryInterface
 {
-    /* @var AbstractConnection */
+    /* @var Client */
     private $cache;
 
     /**
      * CartWriterRepository constructor.
+     * @param string $host
      */
     public function __construct(string $host)
     {
-        $this->cache = RedisAdapter::createConnection(
-            $host
-        );
+        $this->cache = $this->cache = new Client([
+            'scheme' => 'tcp',
+            'host' => 'redis',
+            'port' => 6379,
+        ]);;
     }
 
     /**
@@ -30,13 +32,18 @@ class CartWriterRepository implements CartWriterRepositoryInterface
         $oldProducts = [];
 
         try {
-            $oldProducts = $this->cache->get(self::CART . '_' . $cartId . '_' . self::PRODUCTS);
+            $oldProducts = json_decode($this->cache->get(self::CART . '_' . $cartId . '_' . self::PRODUCTS)) ?? [];
         } catch (\Exception $e) {
         }
+        try {
+            $this->cache->set(
+                self::CART . '_' . $cartId . '_' . self::PRODUCTS,
+                json_encode(array_merge($oldProducts, $products))
+            );
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+        }
 
-        $this->cache->set(
-            self::CART . '_' . $cartId . '_' . self::PRODUCTS,
-            array_merge($oldProducts, $products)
-        );
+
     }
 }

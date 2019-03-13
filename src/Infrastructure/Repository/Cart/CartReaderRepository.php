@@ -3,13 +3,9 @@
 namespace App\Infrastructure\Repository\Cart;
 
 use App\Application\Interfaces\CartReaderRepositoryInterface;
-use Predis\Connection\AbstractConnection;
-use Symfony\Component\Cache\Adapter\RedisAdapter;
-
 
 class CartReaderRepository implements CartReaderRepositoryInterface
 {
-    /* @var AbstractConnection */
     private $cache;
 
     /**
@@ -17,9 +13,11 @@ class CartReaderRepository implements CartReaderRepositoryInterface
      */
     public function __construct(string $host)
     {
-        $this->cache = RedisAdapter::createConnection(
-            $host
-        );
+        $this->cache = new \Predis\Client([
+            'scheme' => 'tcp',
+            'host' => 'redis',
+            'port' => 6379,
+        ]);
     }
 
     /**
@@ -37,6 +35,6 @@ class CartReaderRepository implements CartReaderRepositoryInterface
      */
     public function findAllProductsFromCart(int $cartId): array
     {
-        return $this->cache->get(self::CART . '_' . $cartId . '_' . self::PRODUCTS) ?? [];
+        return json_decode($this->cache->get(self::CART . '_' . $cartId . '_' . self::PRODUCTS)) ?? [];
     }
 }

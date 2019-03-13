@@ -15,10 +15,3 @@ framework:
   #fragments: true
   php_errors:
     log: true
-
-  cache:
-    pools:
-      memcached_service:
-        adapter: cache.adapter.memcached
-        public: true
-        provider: 'memcached://memcached:11211'
